@@ -8,6 +8,10 @@ ResponsiveAnalogRead analogTwo(A1, true);
 ResponsiveAnalogRead analogThree(A2, true);
 ResponsiveAnalogRead analogFour(A3, true);
 
+
+int numButtons = 10;
+byte allButtons[11];
+
 void setup() {
 //  Serial.begin(9600);
 
@@ -18,7 +22,7 @@ void setup() {
   Joystick.setZAxisRange(0, 1023);
 
   // Enable pins 0-9 for buttons
-  for (int i=0; i<11; i++) {
+  for (int i=0; i<numButtons; i++) {
     pinMode(i, INPUT_PULLUP);
   }
 
@@ -34,8 +38,6 @@ void setup() {
   Joystick.begin(false);
 }
 
-byte allButtons[11];
-
 void loop() {
   analogOne.update();
   analogTwo.update();
@@ -47,7 +49,7 @@ void loop() {
   Joystick.setRzAxis(analogThree.getValue());
   Joystick.setZAxis(analogFour.getValue());
 
-    for (int i=0; i<11; i++) {
+    for (int i=0; i<numButtons; i++) {
       if (digitalRead(i)) {
         allButtons[i] = 0;
       } 
@@ -57,7 +59,7 @@ void loop() {
       Joystick.setButton(i, allButtons[i]);
     }
 
-    for (int i=14; i<17; i++) {
+    for (int i=14; i<16; i++) {
       if (digitalRead(i)) {
         allButtons[i] = 0;
       } 
@@ -67,7 +69,13 @@ void loop() {
       Joystick.setButton(i+1, allButtons[i]);
     }
 
-    
+    if (digitalRead(16)) {
+      allButtons[16] = 1;
+    } 
+    else {
+      allButtons[16] = 0;
+    }
+    Joystick.setButton(16+1, allButtons[16]);
 
   Joystick.sendState();
   delay(5);
